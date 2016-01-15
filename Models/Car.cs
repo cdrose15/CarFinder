@@ -118,5 +118,9 @@ namespace CarFinder.Models
 
         [StringLength(50)]
         public string make_display { get; set; }
+
+
+
     }
+
 }
