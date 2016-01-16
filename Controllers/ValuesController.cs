@@ -8,7 +8,9 @@ using System.Web.Http.Description;
 
 namespace CarFinder.Controllers
 {
+    // Ignore in API help file
     [ApiExplorerSettings(IgnoreApi = true)]
+
     [Authorize]
     public class ValuesController : ApiController
     {
@@ -24,5 +26,19 @@ namespace CarFinder.Controllers
             return "value";
         }
 
+        // POST api/values
+        public void Post([FromBody]string value)
+        {
+        }
+
+        // PUT api/values/5
+        public void Put(int id, [FromBody]string value)
+        {
+        }
+
+        // DELETE api/values/5
+        public void Delete(int id)
+        {
+        }
     }
 }

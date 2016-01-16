@@ -20,23 +20,32 @@ namespace CarFinder.Controllers
         /// <summary>
         /// Method for Stored Procedure call to get Cars by Year, Make, Model, and Trim
         /// </summary>
-        /// <param name="carsbyyear">Parameter for year of cars</param>
-        /// <param name="carsbymake">Parameter for make of cars</param>
-        /// <param name="carsbymodel">Parameter for model of cars</param>
-        /// <param name="carsbytrim">Parameter for trim of cars</param>
+        /// <param name="year">Parameter for year of cars</param>
+        /// <param name="make">Parameter for make of cars</param>
+        /// <param name="model">Parameter for model of cars</param>
+        /// <param name="trim">Parameter for trim of cars</param>
         /// <returns>All cars by year, make, model, and trim</returns>
-        /// 
-        public IHttpActionResult GetCarsByYearMakeModelTrim(string carsbyyear, string carsbymake, string carsbymodel, string carsbytrim)
+        /// <example>SQL Statement
+        /// <code>
+        /// select * from dbo.Cars 
+        /// where (
+        /// (@model_year is null or @model_year ='' or model_year = @model_year) and
+        /// (@make is null or @make ='' or make = @make) and
+        /// (@model_name is null or @model_name ='' or model_name = @model_name) and
+        /// (@model_trim is null or @model_trim ='' or model_trim = @model_trim))
+        /// </code>
+        /// </example>
+        public IHttpActionResult GetCarsByYearMakeModelTrim(string year, string make, string model, string trim)
         {
             // Input Parameters
-            var Scarsbyyear = new SqlParameter("@carsbyyear", carsbyyear);
-            var Scarsbymake = new SqlParameter("@carsbymake", carsbymake);
-            var Scarsbymodel = new SqlParameter("@carsbymodel", carsbymodel);
-            var Scarsbytrim = new SqlParameter("@carsbytrim", carsbytrim);
-            var retval = db.Database.SqlQuery<string>(
+            var Syear = new SqlParameter("@year", year??"");
+            var Smake = new SqlParameter("@make", make??"");
+            var Smodel = new SqlParameter("@model", model??"");
+            var Strim = new SqlParameter("@trim", trim??"");
+            var retval = db.Database.SqlQuery<Car>(
                 // Run Stored Procedure
-                "exec getCarsByYearMakeModelTrim @carsbyyear, @carsbymake, @carsbymodel, @carsbytrim",
-                Scarsbyyear, Scarsbymake, Scarsbymodel, Scarsbytrim).ToList();
+                "exec getCarsByYearMakeModelTrim @year, @make, @model, @trim",
+                Syear, Smake, Smodel, Strim).ToList();
 
             return Ok(retval);
         }
@@ -45,7 +54,12 @@ namespace CarFinder.Controllers
         /// Method for Stored Procedure call to get all distinct years of cars
         /// </summary>
         /// <returns>All years of cars in database</returns>
-        ///
+        /// <example>SQL Statement
+        /// <code>
+        /// select * distinct years from dbo.Cars 
+        /// order by years desc
+        /// </code>
+        /// </example>
         public IHttpActionResult GetYears()
         {
             var retval = db.Database.SqlQuery<string>(
@@ -58,16 +72,23 @@ namespace CarFinder.Controllers
         /// <summary>
         /// Method for Stored Procedure call to get all models of cars for specfic year
         /// </summary>
-        /// <param name="makebyyear">Parameter for year</param>
+        /// <param name="year">Parameter for year</param>
         /// <returns>All makes of cars for specific year chosen</returns>
-        ///
-        public IHttpActionResult GetMakeByYear(string makebyyear)
+        /// <text>SQL Statement
+        /// <xml>
+        /// select * distinct years from dbo.Cars 
+        /// select distinct make from dbo.Cars
+        /// where model_year = @model_year
+        /// order by make desc;
+        /// </xml>
+        /// </text>
+        public IHttpActionResult GetMakeByYear(string year)
         {
             var retval = db.Database.SqlQuery<string>(
                 // Run Stored Procedure
-                "exec getMakeByYear @model_year",
+                "exec getMakeByYear @year",
                 // Input Parameter
-                new SqlParameter("@model_year", makebyyear)).ToList();
+                new SqlParameter("@year", year)).ToList();
             // Return Value
             return Ok(retval);
         }
@@ -75,19 +96,25 @@ namespace CarFinder.Controllers
         /// <summary>
         /// Method for Stored Procedure call to get all models of car by year and make
         /// </summary>
-        /// <param name="modelbyyear">Parameter for year</param>
-        /// <param name="modelbymake">Parameter for make</param>
+        /// <param name="year">Parameter for year</param>
+        /// <param name="make">Parameter for make</param>
         /// <returns>Cars models by year and make</returns>
-        ///
-        public IHttpActionResult GetModelByYearMake(string modelbyyear, string modelbymake)
+        /// <example>SQL Statement
+        /// <code>
+        /// select distinct model_name from dbo.Cars
+        /// where model_year = @model_year and make = @make
+        /// order by model_name asc;
+        /// </code>
+        /// </example>
+        public IHttpActionResult GetModelByYearMake(string year, string make)
         {
             // Input Parameters
-            var Smodelbyyear = new SqlParameter("@modelbyyear", modelbyyear);
-            var Smodelbymake = new SqlParameter("@modelbymake", modelbymake);
+            var Syear = new SqlParameter("@year", year);
+            var Smake = new SqlParameter("@make", make);
             var retval = db.Database.SqlQuery<string>(
                 // Run Stored Procedure
-                "exec getModelByYearMake @modelbyyear, @modelbymake",
-                Smodelbymake, Smodelbyyear).ToList();
+                "exec getModelByYearMake @year, @make",
+                Smake, Syear).ToList();
             // Return Value
             return Ok(retval);
         }
@@ -95,21 +122,28 @@ namespace CarFinder.Controllers
         /// <summary>
         /// Method for Stored Procedure call to get cars trim by user chosen year, make, and model
         /// </summary>
-        /// <param name="trimbyyear">Parameter for year</param>
-        /// <param name="trimbymake">Parameter for make</param>
-        /// <param name="trimbymodel">Parameter for model</param>
+        /// <param name="year">Parameter for year</param>
+        /// <param name="make">Parameter for make</param>
+        /// <param name="model">Parameter for model</param>
         /// <returns>Cars trim by year, make, and model </returns>
-        ///
-        public IHttpActionResult GetTrimByYearMakeModel(string trimbyyear, string trimbymake, string trimbymodel)
+        /// <example>SQL Statement
+        /// <code>
+        /// select distinct model_trim from dbo.Cars
+        /// where model_trim != '' and model_trim is not null and model_year = @model_year 
+        /// and make = @make and model_name = @model_name
+        /// order by model_trim asc
+        /// </code>
+        /// </example>
+        public IHttpActionResult GetTrimByYearMakeModel(string year, string make, string model)
         {
             // Input Parameters
-            var Strimbyyear = new SqlParameter("@trimbyyear", trimbyyear);
-            var Strimbymake = new SqlParameter("@trimbymake", trimbymake);
-            var Strimbymodel = new SqlParameter("@trimbymodel", trimbymodel);
+            var Syear = new SqlParameter("@year", year);
+            var Smake = new SqlParameter("@make", make);
+            var Smodel = new SqlParameter("@model", model);
             var retval = db.Database.SqlQuery<string>(
                 // Run Stored Procedure
-                "exec getTrimByYearMakeModel @trimbyyear, @trimbymake, @trimbymodel",
-                Strimbymake, Strimbyyear, Strimbymodel).ToList();
+                "exec getTrimByYearMakeModel @year, @make, @model",
+                Smake, Syear, Smodel).ToList();
             // Return Value
             return Ok(retval);
         }
@@ -117,7 +151,7 @@ namespace CarFinder.Controllers
 
         // Third Party API's
         /// <summary>
-        /// Used to conncect to Bing search API for images and NHTSA API for recall information
+        /// Used to access the NHTSA API for vehicle information including recalls as well as Bing API to get URL's for images of specific vehicles.
         /// </summary>
         /// <param name="Id"></param>
         /// <returns>Car images as well as recall information for specific car</returns>

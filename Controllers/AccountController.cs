@@ -20,7 +20,9 @@ using System.Web.Http.Description;
 
 namespace CarFinder.Controllers
 {
+    // Ignore in API help file
     [ApiExplorerSettings(IgnoreApi = true)]
+
     [Authorize]
     [RoutePrefix("api/Account")]
     public class AccountController : ApiController

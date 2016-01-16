@@ -572,50 +572,84 @@
             <summary>
             Method for Stored Procedure call to get Cars by Year, Make, Model, and Trim
             </summary>
-            <param name="carsbyyear">Parameter for year of cars</param>
-            <param name="carsbymake">Parameter for make of cars</param>
-            <param name="carsbymodel">Parameter for model of cars</param>
-            <param name="carsbytrim">Parameter for trim of cars</param>
+            <param name="year">Parameter for year of cars</param>
+            <param name="make">Parameter for make of cars</param>
+            <param name="model">Parameter for model of cars</param>
+            <param name="trim">Parameter for trim of cars</param>
             <returns>All cars by year, make, model, and trim</returns>
-            
+            <example>SQL Statement
+            <code>
+            select * from dbo.Cars 
+            where (
+            (@model_year is null or @model_year ='' or model_year = @model_year) and
+            (@make is null or @make ='' or make = @make) and
+            (@model_name is null or @model_name ='' or model_name = @model_name) and
+            (@model_trim is null or @model_trim ='' or model_trim = @model_trim))
+            </code>
+            </example>
         </member>
         <member name="M:CarFinder.Controllers.CarController.GetYears">
-             <summary>
-             Method for Stored Procedure call to get all distinct years of cars
-             </summary>
-             <returns>All years of cars in database</returns>
-            
+            <summary>
+            Method for Stored Procedure call to get all distinct years of cars
+            </summary>
+            <returns>All years of cars in database</returns>
+            <example>SQL Statement
+            <code>
+            select * distinct years from dbo.Cars 
+            order by years desc
+            </code>
+            </example>
         </member>
         <member name="M:CarFinder.Controllers.CarController.GetMakeByYear(System.String)">
-             <summary>
-             Method for Stored Procedure call to get all models of cars for specfic year
-             </summary>
-             <param name="makebyyear">Parameter for year</param>
-             <returns>All makes of cars for specific year chosen</returns>
-            
+            <summary>
+            Method for Stored Procedure call to get all models of cars for specfic year
+            </summary>
+            <param name="year">Parameter for year</param>
+            <returns>All makes of cars for specific year chosen</returns>
+            <text>SQL Statement
+            <xml>
+            select * distinct years from dbo.Cars 
+            select distinct make from dbo.Cars
+            where model_year = @model_year
+            order by make desc;
+            </xml>
+            </text>
         </member>
         <member name="M:CarFinder.Controllers.CarController.GetModelByYearMake(System.String,System.String)">
-             <summary>
-             Method for Stored Procedure call to get all models of car by year and make
-             </summary>
-             <param name="modelbyyear">Parameter for year</param>
-             <param name="modelbymake">Parameter for make</param>
-             <returns>Cars models by year and make</returns>
-            
+            <summary>
+            Method for Stored Procedure call to get all models of car by year and make
+            </summary>
+            <param name="year">Parameter for year</param>
+            <param name="make">Parameter for make</param>
+            <returns>Cars models by year and make</returns>
+            <example>SQL Statement
+            <code>
+            select distinct model_name from dbo.Cars
+            where model_year = @model_year and make = @make
+            order by model_name asc;
+            </code>
+            </example>
         </member>
         <member name="M:CarFinder.Controllers.CarController.GetTrimByYearMakeModel(System.String,System.String,System.String)">
-             <summary>
-             Method for Stored Procedure call to get cars trim by user chosen year, make, and model
-             </summary>
-             <param name="trimbyyear">Parameter for year</param>
-             <param name="trimbymake">Parameter for make</param>
-             <param name="trimbymodel">Parameter for model</param>
-             <returns>Cars trim by year, make, and model </returns>
-            
+            <summary>
+            Method for Stored Procedure call to get cars trim by user chosen year, make, and model
+            </summary>
+            <param name="year">Parameter for year</param>
+            <param name="make">Parameter for make</param>
+            <param name="model">Parameter for model</param>
+            <returns>Cars trim by year, make, and model </returns>
+            <example>SQL Statement
+            <code>
+            select distinct model_trim from dbo.Cars
+            where model_trim != '' and model_trim is not null and model_year = @model_year 
+            and make = @make and model_name = @model_name
+            order by model_trim asc
+            </code>
+            </example>
         </member>
         <member name="M:CarFinder.Controllers.CarController.getCar(System.Int32)">
             <summary>
-            Used to conncect to Bing search API for images and NHTSA API for recall information
+            Used to access the NHTSA API for vehicle information including recalls as well as Bing API to get URL's for images of specific vehicles.
             </summary>
             <param name="Id"></param>
             <returns>Car images as well as recall information for specific car</returns>
