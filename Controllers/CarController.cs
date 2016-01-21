@@ -17,6 +17,14 @@ namespace CarFinder.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        public class Selected
+        {
+            public string year { get; set; }
+            public string make { get; set; }
+            public string model { get; set; }
+            public string trim { get; set; }
+        }
+
         /// <summary>
         /// Method for Stored Procedure call to get Cars by Year, Make, Model, and Trim
         /// </summary>
@@ -35,13 +43,14 @@ namespace CarFinder.Controllers
         /// (@model_trim is null or @model_trim ='' or model_trim = @model_trim))
         /// </code>
         /// </example>
-        public IHttpActionResult GetCarsByYearMakeModelTrim(string year, string make, string model, string trim)
+        [HttpPost]
+        public IHttpActionResult GetCarsByYearMakeModelTrim(Selected selected)
         {
             // Input Parameters
-            var Syear = new SqlParameter("@year", year??"");
-            var Smake = new SqlParameter("@make", make??"");
-            var Smodel = new SqlParameter("@model", model??"");
-            var Strim = new SqlParameter("@trim", trim??"");
+            var Syear = new SqlParameter("@year", selected.year??"");
+            var Smake = new SqlParameter("@make", selected.make??"");
+            var Smodel = new SqlParameter("@model", selected.model??"");
+            var Strim = new SqlParameter("@trim", selected.trim??"");
             var retval = db.Database.SqlQuery<Car>(
                 // Run Stored Procedure
                 "exec getCarsByYearMakeModelTrim @year, @make, @model, @trim",
@@ -60,6 +69,7 @@ namespace CarFinder.Controllers
         /// order by years desc
         /// </code>
         /// </example>
+        [HttpPost]
         public IHttpActionResult GetYears()
         {
             var retval = db.Database.SqlQuery<string>(
@@ -82,13 +92,15 @@ namespace CarFinder.Controllers
         /// order by make desc;
         /// </xml>
         /// </text>
-        public IHttpActionResult GetMakeByYear(string year)
+        [HttpPost]
+        public IHttpActionResult GetMakeByYear(Selected selected)
         {
+            // Input Parameters
+            var Syear = new SqlParameter("@year", selected.year);
             var retval = db.Database.SqlQuery<string>(
                 // Run Stored Procedure
                 "exec getMakeByYear @year",
-                // Input Parameter
-                new SqlParameter("@year", year)).ToList();
+                Syear).ToList();
             // Return Value
             return Ok(retval);
         }
@@ -106,11 +118,12 @@ namespace CarFinder.Controllers
         /// order by model_name asc;
         /// </code>
         /// </example>
-        public IHttpActionResult GetModelByYearMake(string year, string make)
+        [HttpPost]
+        public IHttpActionResult GetModelByYearMake(Selected selected)
         {
             // Input Parameters
-            var Syear = new SqlParameter("@year", year);
-            var Smake = new SqlParameter("@make", make);
+            var Syear = new SqlParameter("@year", selected.year);
+            var Smake = new SqlParameter("@make", selected.make);
             var retval = db.Database.SqlQuery<string>(
                 // Run Stored Procedure
                 "exec getModelByYearMake @year, @make",
@@ -134,12 +147,13 @@ namespace CarFinder.Controllers
         /// order by model_trim asc
         /// </code>
         /// </example>
-        public IHttpActionResult GetTrimByYearMakeModel(string year, string make, string model)
+        [HttpPost]
+        public IHttpActionResult GetTrimByYearMakeModel(Selected selected)
         {
             // Input Parameters
-            var Syear = new SqlParameter("@year", year);
-            var Smake = new SqlParameter("@make", make);
-            var Smodel = new SqlParameter("@model", model);
+            var Syear = new SqlParameter("@year", selected.year);
+            var Smake = new SqlParameter("@make", selected.make);
+            var Smodel = new SqlParameter("@model", selected.model);
             var retval = db.Database.SqlQuery<string>(
                 // Run Stored Procedure
                 "exec getTrimByYearMakeModel @year, @make, @model",
@@ -154,7 +168,8 @@ namespace CarFinder.Controllers
         /// Used to access the NHTSA API for vehicle information including recalls as well as Bing API to get URL's for images of specific vehicles.
         /// </summary>
         /// <param name="Id"></param>
-        /// <returns>Car images as well as recall information for specific car</returns>
+        /// <returns>Car images as well as detailed information, including recalls, for specific car</returns>
+        [HttpPost]
         public async Task<IHttpActionResult> getCar(int Id)
         {
             HttpResponseMessage response;
@@ -167,7 +182,7 @@ namespace CarFinder.Controllers
                 client.BaseAddress = new Uri("http://www.nhtsa.gov/");
                 try
                 {
-                    response = await client.GetAsync("webapi/api/Recalls/vehicle/modelyear/" + Car.model_name +
+                    response = await client.GetAsync("webapi/api/Recalls/vehicle/modelyear/" + Car.model_year +
                                                                                     "/make/" + Car.make +
                                                                                     "/model/" + Car.model_name + "?format=json");
                     content = await response.Content.ReadAsStringAsync();
@@ -179,28 +194,17 @@ namespace CarFinder.Controllers
             }
             Recalls = content;
 
-            var image = new BingSearchContainer(new Uri("https://api.datamarket.azure.com/Bing/search/"));
+            // Bing Search API
+            var image = new BingSearchContainer(new Uri("https://api.datamarket.azure.com/Bing/search/v1/Image"));
 
             image.Credentials = new NetworkCredential("accountKey", "s8cUIpKPWJ609E7VqtBbx9HNdRp9Z2NbUne/HyPgxbQ");
-            var marketData = image.Composite(
+            var marketData = image.Composite (
                 "image",
-                Car.model_year + " " + Car.make + " " + Car.model_name + " " + Car.model_trim,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null
-                ).Execute();
+                Car.model_year + " " + Car.make + " " + Car.model_name + " " + Car.model_trim + " " + "NOT ebay",
+                null,null,null,null,null,null,null,null,null,null,null,null,null).Execute();
 
             Image = marketData.First().Image.First().MediaUrl;
+
             return Ok(new { car = Car, recalls = Recalls, image = Image });
         }
     }

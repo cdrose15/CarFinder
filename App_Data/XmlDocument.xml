@@ -568,7 +568,7 @@
             <param name="Latitude">Latitude Sample Values : 47.603450</param>
             <param name="Longitude">Longitude Sample Values : -122.329696</param>
         </member>
-        <member name="M:CarFinder.Controllers.CarController.GetCarsByYearMakeModelTrim(System.String,System.String,System.String,System.String)">
+        <member name="M:CarFinder.Controllers.CarController.GetCarsByYearMakeModelTrim(CarFinder.Controllers.CarController.Selected)">
             <summary>
             Method for Stored Procedure call to get Cars by Year, Make, Model, and Trim
             </summary>
@@ -600,7 +600,7 @@
             </code>
             </example>
         </member>
-        <member name="M:CarFinder.Controllers.CarController.GetMakeByYear(System.String)">
+        <member name="M:CarFinder.Controllers.CarController.GetMakeByYear(CarFinder.Controllers.CarController.Selected)">
             <summary>
             Method for Stored Procedure call to get all models of cars for specfic year
             </summary>
@@ -615,7 +615,7 @@
             </xml>
             </text>
         </member>
-        <member name="M:CarFinder.Controllers.CarController.GetModelByYearMake(System.String,System.String)">
+        <member name="M:CarFinder.Controllers.CarController.GetModelByYearMake(CarFinder.Controllers.CarController.Selected)">
             <summary>
             Method for Stored Procedure call to get all models of car by year and make
             </summary>
@@ -630,7 +630,7 @@
             </code>
             </example>
         </member>
-        <member name="M:CarFinder.Controllers.CarController.GetTrimByYearMakeModel(System.String,System.String,System.String)">
+        <member name="M:CarFinder.Controllers.CarController.GetTrimByYearMakeModel(CarFinder.Controllers.CarController.Selected)">
             <summary>
             Method for Stored Procedure call to get cars trim by user chosen year, make, and model
             </summary>
@@ -652,7 +652,7 @@
             Used to access the NHTSA API for vehicle information including recalls as well as Bing API to get URL's for images of specific vehicles.
             </summary>
             <param name="Id"></param>
-            <returns>Car images as well as recall information for specific car</returns>
+            <returns>Car images as well as detailed information, including recalls, for specific car</returns>
         </member>
     </members>
 </doc>

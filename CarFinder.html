@@ -11,6 +11,9 @@
 
     <title>CarFinder</title>
 
+    <!-- CSS for my table-->
+    <link href="css/CarFinder.css" rel="stylesheet" />
+
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
@@ -33,10 +36,11 @@
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <p class="navbar-brand">Car Finder -- Created with Web API / AngularJS</p>
+                <a class="navbar-brand">CarFinder</a>
+                <a class="navbar-brand" href="#application">GetStarted</a>
             </div>
-        </div>
-    </nav>
+         </div>
+     </nav>
 
     <!-- Header-->
     <header>
@@ -44,31 +48,78 @@
     </header>
 
     <!-- Content Section -->
+    <a name="application"></a>
     <section>
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="section-heading">Car Finder</h1>
-                    <p class="lead section-lead">This application will let you find a car based off of the Year, Make, Model, and Trim</p>
+                    <p class="lead section-lead">This application will let you find a car based off of the Year, Make, Model, and Trim of your choosing.</p>
                     <p class="section-paragraph">To get started select a Year first, then a Make, next a Model, and at last a Trim.</p>
-                    <p class="section-paragraph">You can also view images and recall information for specific vehicles.</p>
                 </div>
             </div>
-            <div class="container" ng-app="CarFinder"></div>
-            <div ng-view></div>
-            <div ng-app="CarFinder">
-             </div>
+        </div>
+        <div class="container" ng-app="myCarApp" >
+            <div ng-controller="myCarController as car">
+
+                Select Year:  <select ng-options="y for y in car.years" ng-model="car.selected.year" ng-change="car.getMakes()">{{y}}</select>
+                Select Make:  <select ng-options="mak for mak in car.makes" ng-model="car.selected.make" ng-change="car.getModels()">{{mak}}</select>
+                Select Model: <select ng-options="mod for mod in car.models" ng-model="car.selected.model" ng-change="car.getTrims()">{{mod}}</select>
+                Select Trim:  <select ng-options="t for t in car.trims" ng-model="car.selected.trim" ng-change="car.getCars()">{{t}}</select>
+                <br /><br />
+
+                <table class="table-bordered table">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Make</th>
+                            <th>Model</th>
+                            <th>Trim</th>
+                            <th>Body Style</th>
+                            <th>Seating Capacity</th>
+                            <th>Transmission Type</th>
+                            <th>Drive Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="c in car.cars | limitTo: 25">
+                            <td>{{c.model_year}}</td>
+                            <td>{{c.make}}</td>
+                            <td>{{c.model_name}}</td>
+                            <td>{{c.model_trim}}</td>
+                            <td>{{c.body_style}}</td>
+                            <td>{{c.seats}}</td>
+                            <td>{{c.transmission_type}}</td>
+                            <td>{{c.drive_type}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <table class="table-bordered table">
+                    <thead>
+                        <tr>
+                            <th>Recalls</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-model="car.getCar(id)">
+                            <td>{{id}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <div class="navbar navbar-inverse navbar-fixed-bottom">
+        <div class="panel-footer navbar navbar-inverse navbar-fixed-bottom ">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <p class="navbar-brand ">Copyright &copy; Chris Rose 2016 - CarFinder</p>
-                    </div>
+                        <p>Copyright &copy; Chris Rose 2016 - CarFinder Created with Web API / AngularJS - <a target="_blank" href="/help">API Documentation</a></p>
+
+                   </div>  
                 </div>
             </div>
             <!-- /.row -->
@@ -76,13 +127,13 @@
         <!-- /.container -->
     </footer>
 
-        <!-- jQuery -->
-        <script src="js/jquery.js"></script>
         <!--AngularJS-->
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
-        <script src="Scripts/MyAngular/CarFinderController.js"></script>
-        <!-- Bootstrap Core JavaScript -->
-        <script src="js/bootstrap.min.js"></script>
+    <script src="Scripts/angular.min.js"></script>
+    <script src="Scripts/angular-route.min.js"></script>
+    <script src="Scripts/MyAngular/carApp.js"></script>
+    <script src="Scripts/MyAngular/carController.js"></script>
+    <script src="Scripts/MyAngular/carSvc.js"></script>
+
 </body>
 
 </html>
