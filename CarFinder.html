@@ -11,14 +11,14 @@
 
     <title>CarFinder</title>
 
-    <!-- CSS for my table-->
-    <link href="css/CarFinder.css" rel="stylesheet" />
-
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="css/full-width-pics.css" rel="stylesheet">
+
+    <!--trNgGrid CSS-->
+    <link href="css/trNgGrid.css" rel="stylesheet" />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -36,8 +36,9 @@
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <a class="navbar-brand">CarFinder</a>
+                <a class="navbar-brand" href="#">CarFinder</a>
                 <a class="navbar-brand" href="#application">GetStarted</a>
+                <a class="navbar-brand" target="_blank" href="/help">Help</a>
             </div>
          </div>
      </nav>
@@ -49,75 +50,99 @@
 
     <!-- Content Section -->
     <a name="application"></a>
-    <section>
+    <section class="mainsection">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="section-heading">Car Finder</h1>
-                    <p class="lead section-lead">This application will let you find a car based off of the Year, Make, Model, and Trim of your choosing.</p>
-                    <p class="section-paragraph">To get started select a Year first, then a Make, next a Model, and at last a Trim.</p>
+                    <h4>This application will let you find a car based off of the Year, Make, Model, and Trim of your choosing.</h4>
+                    <h4>To get started select a Year first, then a Make, next a Model, and at last a Trim.</h4><br />
                 </div>
             </div>
         </div>
         <div class="container" ng-app="myCarApp" >
             <div ng-controller="myCarController as car">
 
-                Select Year:  <select ng-options="y for y in car.years" ng-model="car.selected.year" ng-change="car.getMakes()">{{y}}</select>
-                Select Make:  <select ng-options="mak for mak in car.makes" ng-model="car.selected.make" ng-change="car.getModels()">{{mak}}</select>
-                Select Model: <select ng-options="mod for mod in car.models" ng-model="car.selected.model" ng-change="car.getTrims()">{{mod}}</select>
-                Select Trim:  <select ng-options="t for t in car.trims" ng-model="car.selected.trim" ng-change="car.getCars()">{{t}}</select>
-                <br /><br />
+                <b>Select Year:</b>  <select ng-options="y for y in car.years" ng-model="car.selected.year" ng-change="car.getMakes()">{{y}}</select>
+                <b>Select Make:</b>  <select ng-options="mak for mak in car.makes" ng-model="car.selected.make" ng-change="car.getModels()">{{mak}}</select>
+                <b>Select Model:</b> <select ng-options="mod for mod in car.models" ng-model="car.selected.model" ng-change="car.getTrims()">{{mod}}</select>
+                <b>Select Trim:</b>  <select ng-options="t for t in car.trims" ng-model="car.selected.trim" ng-change="car.getCars()">{{t}}</select>
+                <br /><br /><br />
 
-                <table class="table-bordered table">
+                <table tr-ng-grid="" items="car.cars" page-items="20">
                     <thead>
                         <tr>
-                            <th>Year</th>
-                            <th>Make</th>
-                            <th>Model</th>
-                            <th>Trim</th>
-                            <th>Body Style</th>
-                            <th>Seating Capacity</th>
-                            <th>Transmission Type</th>
-                            <th>Drive Type</th>
+                            <th field-name="model_year" display-name="Year"></th>
+                            <th field-name="make" display-name="Make"></th>
+                            <th field-name="model_name" display-name="Model"></th>
+                            <th field-name="model_trim" display-name="Trim"></th>
+                            <th field-name="body_style" display-name="Body Style"></th>
+                            <th field-name="engine_power_ps" display-name="Horsepower"></th>
+                            <th field-name="transmission_type" display-name="Trasnsmission"></th>
+                            <th field-name="drive_type" display-name="Drive Type"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="c in car.cars | limitTo: 25">
-                            <td>{{c.model_year}}</td>
-                            <td>{{c.make}}</td>
-                            <td>{{c.model_name}}</td>
-                            <td>{{c.model_trim}}</td>
-                            <td>{{c.body_style}}</td>
-                            <td>{{c.seats}}</td>
-                            <td>{{c.transmission_type}}</td>
-                            <td>{{c.drive_type}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <table class="table-bordered table">
-                    <thead>
                         <tr>
-                            <th>Recalls</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-model="car.getCar(id)">
-                            <td>{{id}}</td>
+                            <td><button ng-click="car.open(gridItem.id)">View</button></td>
                         </tr>
                     </tbody>
                 </table>
+
+                <!--Modal-->
+                <script type="text/ng-template" id="carModal.html">
+                    <div class="modal-header">
+                        <h3 class="modal-title">
+                            <b>{{cm.car.car.model_year}}  {{cm.car.car.make}}  {{cm.car.car.model_name}}  {{cm.car.car.model_trim}}</b>
+                            <button class="pull-right btn btn-default" ng-click="cm.cancel()">X</button>
+                        </h3>
+                    </div>
+                    <div class="modal-body">
+
+                        <uib-tabset>
+                            <uib-tab class="detailstyle" heading="Image / Details">
+                                <image class=col-lg-8 style="max-width:500px;" ng-src="{{cm.car.image}}" />
+                                <p><b>Body Style:</b>           {{cm.car.car.body_style}}</p>
+                                <p><b>Number of Seats:</b>      {{cm.car.car.seats}}</p>
+                                <p><b>Fuel Capacity (L):</b>    {{cm.car.car.fuel_capacity_l}}</p>
+                                <p><b>Capacity (cc):</b>        {{cm.car.car.engine_cc}}</p>
+                                <p><b>Number of Cylinders:</b>  {{cm.car.car.engine_num_cyl}}</p>
+                                <p><b>Horsepower:</b>           {{cm.car.car.engine_power_ps}}</p>
+                                <p><b>Torque (rpm):</b>         {{cm.car.car.engine_torque_rpm}}</p>
+                                <p><b>Wheelbase (mm):</b>       {{cm.car.car.wheelbase}}</p>
+                                <p><b>Total Weight (kg):</b>    {{cm.car.car.weight_kg}}</p>
+                            </uib-tab>
+                            <uib-tab heading="Recalls">
+                                <p><b>                          {{cm.car.recalls.Message}}</b></p>
+                            <uib-tab ng-repeat="info in cm.car.recalls.Results " heading="NHTSA Campaign Number: {{info.NHTSACampaignNumber}}">
+                                <p><b>Received Date: </b>       {{info.ReportReceivedDate}}</p>
+                                <p><b>Component: </b>           {{info.Component}}</p>
+                                <p><b>Summary: </b>             {{info.Summary}}</p>
+                                <p><b>Consequence: </b>         {{info.Conequence}}</p>
+                                <p><b>Remedy: </b>              {{info.Remedy}}</p>
+                                <p><b>Notes: </b>               {{info.Notes}}</p>
+                            </uib-tab>
+                            </uib-tab> 
+                        </uib-tabset>
+  
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" ng-click="cm.ok()">OK</button>
+                        <button class="btn btn-warning" ng-click="cm.cancel()">Cancel</button>
+                    </div>
+                </script>
+
             </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer>
-        <div class="panel-footer navbar navbar-inverse navbar-fixed-bottom ">
+        <div class="panel-footer navbar-fixed-bottom ">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
-                        <p>Copyright &copy; Chris Rose 2016 - CarFinder Created with Web API / AngularJS - <a target="_blank" href="/help">API Documentation</a></p>
+                        <p class="modal-footer">Copyright &copy; Chris Rose 2016 - CarFinder Created with Web API / AngularJS</p>
 
                    </div>  
                 </div>
@@ -130,6 +155,9 @@
         <!--AngularJS-->
     <script src="Scripts/angular.min.js"></script>
     <script src="Scripts/angular-route.min.js"></script>
+    <script src="Scripts/trNgGrid.min.js"></script>
+    <script src="Scripts/angular-ui/ui-bootstrap.min.js"></script>
+    <script src="Scripts/angular-ui/ui-bootstrap-tpls.min.js"></script>
     <script src="Scripts/MyAngular/carApp.js"></script>
     <script src="Scripts/MyAngular/carController.js"></script>
     <script src="Scripts/MyAngular/carSvc.js"></script>

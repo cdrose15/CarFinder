@@ -1,4 +1,6 @@
-﻿angular.module('myCarApp').factory('carSvc', ['$http','$q', function ($http, $q) {
+﻿// this module contains all services
+
+angular.module('myCarApp').factory('carSvc', ['$http', '$q', function ($http, $q) {
 
     var service = {};
 
@@ -33,8 +35,8 @@
         });
     }
 
-    service.getCar = function (id) {
-        return $http.post("/api/car/GetCar",id).then(function(response){
+    service.getDetails = function (id) {
+        return $http.post("/api/car/getCar", { id: id }).then(function (response) {
             return response.data;
         });
     }

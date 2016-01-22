@@ -25,6 +25,11 @@ namespace CarFinder.Controllers
             public string trim { get; set; }
         }
 
+        public class idClass
+        {
+            public int id { get; set; }
+        }
+
         /// <summary>
         /// Method for Stored Procedure call to get Cars by Year, Make, Model, and Trim
         /// </summary>
@@ -170,12 +175,11 @@ namespace CarFinder.Controllers
         /// <param name="Id"></param>
         /// <returns>Car images as well as detailed information, including recalls, for specific car</returns>
         [HttpPost]
-        public async Task<IHttpActionResult> getCar(int Id)
+        public async Task<IHttpActionResult> getCar(idClass id)
         {
             HttpResponseMessage response;
             string content = "";
-            var Car = db.Cars.Find(Id);
-            var Recalls = "";
+            var Car = db.Cars.Find(id.id);
             var Image = "";
             using (var client = new HttpClient())
             {
@@ -192,7 +196,8 @@ namespace CarFinder.Controllers
                     return InternalServerError(e);
                 }
             }
-            Recalls = content;
+
+            dynamic Recalls = JsonConvert.DeserializeObject(content);
 
             // Bing Search API
             var image = new BingSearchContainer(new Uri("https://api.datamarket.azure.com/Bing/search/v1/Image"));

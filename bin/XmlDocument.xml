@@ -647,7 +647,7 @@
             </code>
             </example>
         </member>
-        <member name="M:CarFinder.Controllers.CarController.getCar(System.Int32)">
+        <member name="M:CarFinder.Controllers.CarController.getCar(CarFinder.Controllers.CarController.idClass)">
             <summary>
             Used to access the NHTSA API for vehicle information including recalls as well as Bing API to get URL's for images of specific vehicles.
             </summary>

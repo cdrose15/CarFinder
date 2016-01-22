@@ -2,7 +2,7 @@
 (function () { // immediatly invoked function
 
     var app = angular.module('myCarApp');
-    app.controller('myCarController', ['carSvc', function (carSvc) {
+    app.controller('myCarController', ['carSvc','$uibModal', function (carSvc, $uibModal) {
 
         var scope = this;
         scope.years = [];
@@ -16,7 +16,6 @@
             trim: ''
         }
         scope.cars = [];
-        scope.id = [];
 
         scope.getYears = function () {
             carSvc.getYears().then(function (data) {
@@ -69,15 +68,39 @@
             })
         }
 
-        scope.getCar = function (id) {
-            CarSvc.getCar(id).then(function (data) {
-                scope.getCars(id)
-                id = data;
-                id = scope.id;
+        scope.open = function (id) {
+            console.log("Id in open " + id)
+            var modalInstance = $uibModal.open({
+                animation: true,
+                templateUrl: 'carModal.html',
+                controller: 'carModalCtrl as cm',
+                size: 'lg',
+                resolve: {
+                    car: function() {
+                        return carSvc.getDetails(id)
+                    }
+                 }
             })
-        }
+        };
 
         scope.getYears();
 
     }]);
+
+    app.controller('carModalCtrl', function ($uibModalInstance, car) { // add car later to params
+
+        var scope = this;
+        scope.n = 0;
+        scope.car = car;
+
+        scope.ok = function () {
+            $uibModalInstance.close();
+        };
+
+        scope.cancel = function () {
+            $uibModalInstance.dismiss();
+        };
+
+    })
+
 })();
