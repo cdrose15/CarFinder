@@ -1,4 +1,4 @@
-﻿// this module contains all services
+﻿// this module contains all services to return data 
 
 angular.module('myCarApp').factory('carSvc', ['$http', '$q', function ($http, $q) {
 
