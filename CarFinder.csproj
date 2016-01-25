@@ -17,8 +17,8 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <ApplicationInsightsResourceId>/subscriptions/05f0db7d-94aa-4c92-b006-b1d682bb2f8b/resourcegroups/Default-ApplicationInsights-CentralUS/providers/microsoft.insights/components/CarFinder</ApplicationInsightsResourceId>
   </PropertyGroup>
@@ -30,7 +30,12 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>App_Data/XmlDocument.xml</DocumentationFile>
+    <DocumentationFile>App_Data\XmlDocument.xml</DocumentationFile>
+    <PublishDatabaseSettings>
+      <Objects>
+      </Objects>
+    </PublishDatabaseSettings>
+    <PublishDatabases>false</PublishDatabases>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -39,6 +44,24 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PublishDatabaseSettings>
+      <Objects>
+        <!--<ObjectGroup Name="DefaultConnection-Deployment" Order="1" Enabled="True">
+          <Destination Path="Data Source=coderfoundry.cloudapp.net,55555%3bInitial Catalog=crose-carfinder%3bPersist Security Info=True%3bUser ID=crose%3bPassword=tripoli1!" />
+          <Object Type="DbFullSql" Enabled="False">
+            <PreSource Path="data source=coderfoundry.cloudapp.net,55555%3binitial catalog=crose-carfinder%3bintegrated security=False%3buser id=crose%3bpassword=tripoli1!%3bconnect timeout=30%3bencrypt=True%3btrustservercertificate=True%3bMultipleActiveResultSets=True%3bApp=EntityFramework" ScriptSchema="True" ScriptData="True" CopyAllFullTextCatalogs="False" DriDefaults="True" />
+            <Source Path="obj\Release\AutoScripts\DefaultConnection-Deployment_SchemaAndData.sql" Transacted="True" />
+          </Object>
+        </ObjectGroup>
+        <ObjectGroup Name="Car-Deployment" Order="2">
+          <Destination Path="" />
+          <Object Type="DbFullSql">
+            <PreSource Path="Data Source=coderfoundry.cloudapp.net,55555%3bInitial Catalog=crose-carfinder%3bIntegrated Security=False%3bUser ID=crose%3bPassword=tripoli1!%3bConnect Timeout=30%3bEncrypt=True%3bTrustServerCertificate=True%3bApplication Name=EntityFramework" ScriptSchema="True" ScriptData="False" CopyAllFullTextCatalogs="False" DriDefaults="True" />
+            <Source Path="obj\Release\AutoScripts\Car-Deployment_SchemaOnly.sql" Transacted="True" />
+          </Object>
+        </ObjectGroup>-->
+      </Objects>
+    </PublishDatabaseSettings>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Bing.RestClient, Version=0.6.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -305,6 +328,7 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\XmlDocument.xml" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Areas\HelpPage\TestClient.css" />
     <Content Include="Content\bootstrap.css" />
@@ -377,7 +401,11 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="CarFinder.html" />
+    <Content Include="images\angularjs %28Custom%29.png" />
+    <Content Include="images\dotnet_logo %28Custom%29.png" />
+    <Content Include="images\no-image.png" />
+    <Content Include="images\sqlserver %28Custom%29.png" />
+    <Content Include="Index.html" />
     <Content Include="images\carheader2.jpg" />
     <Content Include="js\bootstrap.js" />
     <Content Include="js\bootstrap.min.js" />
@@ -452,6 +480,8 @@
     <Content Include="Scripts\angular-cookies.min.js.map" />
     <Content Include="Scripts\angular-aria.min.js.map" />
     <Content Include="Scripts\angular-animate.min.js.map" />
+    <None Include="Properties\PublishProfiles\crose-carapp - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\crose-carapp - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-er.js" />
@@ -1216,7 +1246,9 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\trNgGrid.min.js" />
     <Content Include="Scripts\WebApiTestClient.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -1234,9 +1266,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Scripts\version.json" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />

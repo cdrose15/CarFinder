@@ -208,10 +208,57 @@ namespace CarFinder.Controllers
                "image",
                Car.model_year + " " + Car.make + " " + Car.model_name + " " + Car.model_trim + " " + "NOT ebay",
                null, null, null, null, null, null, null, null, null, null, null, null, null).Execute();
-   
-               Image = marketData.First().Image.First().MediaUrl;
+
+              var Images = marketData.FirstOrDefault().Image;
+
+            foreach(var Img in Images)
+            {
+                if(UrlCtrl.isUrl(Img.MediaUrl))
+                {
+                    Image = Img.MediaUrl;
+                    break;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            if(string.IsNullOrWhiteSpace (Image))
+            {
+                Image = "/images/no-image.png";
+            }
 
             return Ok(new { car = Car, recalls = Recalls, image = Image });
+        }
+    }
+
+    public static class UrlCtrl
+    {
+        public static bool isUrl(string path)
+        {
+            HttpWebResponse response = null;
+            var request = (HttpWebRequest)WebRequest.Create(path);
+            request.Method = "HEAD";
+            bool result = true;
+
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                result = false;
+            }
+            finally
+            {
+                if(response != null)
+                {
+                    response.Close();
+                }
+            }
+
+            return result;
         }
     }
 }
