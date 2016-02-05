@@ -397,6 +397,7 @@
     <Content Include="css\bootstrap.css" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\full-width-pics.css" />
+    <Content Include="css\myStyle.css" />
     <Content Include="css\trNgGrid.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />

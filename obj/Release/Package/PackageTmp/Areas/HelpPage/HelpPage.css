@@ -126,6 +126,12 @@
     font-size: 14px;
     line-height: 143%;
     color: #333;
+    background-color:white;
+
+}
+
+.help-page-table {
+    background-color:white;
 }
 
 .help-page a {
