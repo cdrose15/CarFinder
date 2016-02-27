@@ -403,10 +403,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="images\angularjs %28Custom%29.png" />
-    <Content Include="images\dotnet_logo %28Custom%29.png" />
+    <Content Include="images\dotnet_logo%28Custom%29.png" />
     <Content Include="images\no-image.png" />
     <Content Include="images\sqlserver %28Custom%29.png" />
-    <Content Include="images\UI_Shield_Bootstrap %28Custom%29.png" />
     <Content Include="Index.html" />
     <Content Include="images\carheader2.jpg" />
     <Content Include="js\bootstrap.js" />
